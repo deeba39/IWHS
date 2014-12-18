@@ -1,0 +1,237 @@
+<html>
+<head>
+<!-- <script src ="jquery-1.10.2.js"></script> -->
+<script src ="jquery.js"></script>
+<script src ="jquery.mobile-1.4.4.min.js"></script>
+<script src ="jquery.mobile-1.4.4.js"></script>
+<script type="text/javascript" src ="jquery.mobile-1.4.4.min.map"></script>
+<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.4.min.css"/>
+<script type="text/javascript" src="Barcode.js"></script>
+<style type="text/css">
+    #barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 12pt}
+    </style>
+<script>
+
+		function syncAjax(u){
+			console.log(u);
+				var obj=$.ajax(
+					{url:u,
+					 async:false
+					 }
+				);
+				console.log(obj.responseText);
+				return $.parseJSON(obj.responseText);
+				
+			}
+
+$(document).ready(function(){
+  $('#register_action').click(function() { 
+   var name = $("#name").val();
+   var email = $("#mail").val();
+   var number = $("#num").val();
+   var company = $("#company").val();
+   var eventN = $("#eventNam").val();
+   if(name == "" || email == "" || number == "" || company == "" || eventN == ""){
+    $("#msg").text("Please enter all details.");
+   }
+   else{
+    r=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/Iwuzhiersom_jq/Iwuzhiersom_action.php?cmd=1&name="+name+"&email="+email+"&number="+number+"&company="+company +"&event="+eventN);
+    if(r.result == 1){
+     $("#msg").text(r.message);
+    }
+    else{
+    $("#msg").text(r.message);
+    }
+    s=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/Iwuzhiersom_jq/sms.php?cmd=1&number="+number);
+  }
+     
+});
+
+   $('#meetingz').click(function() { 
+  r=syncAjax("http://50.63.128.135/~csashesi/class2015/aba-debrah/Iwuzhiersom_jq/Iwuzhiersom_action.php?cmd=2");
+if(r.Events.length == 0){
+$("#contentMeeting").html("Sorry, No meeting yet");
+}
+
+
+ var x=1;
+ for (var i = 0; i < r.Events.length; i++) {
+var eventContent='<div data-role="collapsible">'+
+   '<h1>'+r.Events[i].Name+'</h1>'+
+    '<p>The following are the details:</p>'+
+    '<p> Company name: '+r.Events[i].Company+'</p>'+
+    '<p> Venue: '+r.Events[i].Venue+'</p>'+
+    '<p> Date: '+r.Events[i].Date+'</p>'+
+    '<p> Description: '+r.Events[i].Description+'</p>'+
+    '<p><div data-role="controlgroup" data-type="horizontal" align="center">'+
+'<a href="#register" data-role="button">Register</a>'+
+'<a href="#checkingIn" data-role="button" id="meetingz">Check-in</a>'+
+ '</div></p>'+
+    '</div>';
+  x++;
+$(eventContent).appendTo('#contentMeeting').trigger('create');
+}
+ });
+
+});
+
+</script>
+<style>
+h3 {
+    text-shadow: 0 0 3px #FF0000;
+}
+h4 {
+    text-shadow: 2px 2px 8px #FF0000;
+}
+h5 {
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+</style>
+
+</head>
+<body>
+<!--UserMainPage-->
+<div data-role="page" id="home" data-theme="b">
+<div data-role="header" data-position="fixed">
+<p align="center" style='font-size:190%'><img src="images/DAF_logo.png" alt="Dwaso_abafie_logo" align="center" 
+	class="ui-btn-left" height="100" width="100"></img>iWuzHierSom_app</p>
+</div>
+ 
+<div data-role="main" class="ui-content">
+  	<br></br>
+    <div align="center">
+<h4>Iwuzhiersom app helps you to register for any event, view other events and also generate a ticket that would be used for checking IN.</h4>
+  <h5>Enjoy using this app!</h5></div>
+<BR></BR>
+  
+  <div data-role="controlgroup" data-type="horizontal" align="center">
+<a href="#register" data-role="button">Register</a>
+<a href="#meetings" data-role="button" id="meetingz">View Meetings</a>
+  </div>  
+
+<!--EndContent-->
+</div>
+
+ <div data-role="footer">
+    <div data-role="navbar">
+  <ul>  
+  <li><a href="#home" data-transition="flip" data-icon="home" class="ui-btn-active ui-disabled">Home</a></li>
+  <li><a  href="#checkingIn" data-transition="flip" data-icon="carat-r" >Check-in</a></li></ul>
+</div> 
+ </div>
+
+<!--EndPage-->
+</div>
+
+
+<!--SecondPage-->
+<div data-role="page" id="register" data-theme="b">
+
+  <div data-role="header" data-position="fixed">
+<p align="center" style='font-size:190%'><img src="images/DAF_logo.png" alt="Dwaso_abafie_logo" align="center" 
+	class="ui-btn-left" height="100" width="100"></img>iWuzHierSom_app</p>
+</div>
+
+
+  <div data-role="main" class="ui-content">
+<div class="ui-field-contain">
+
+  <label for="name"><b>Name:</b></label>
+  <input type="text" name="name" id="name" placeholder="Kofi Mintah">
+  <label for="mail"><b>Email:</b></label>
+  <input type="text" name="mail" id="mail" placeholder="kfMin@OneLove.com">
+  <label for="num"><b>Phone Nmuber:</b></label>
+  <input type="number" name="num" id="num" placeholder="0233333333">
+
+  <label for="company"><b>Organisation:</b></label>
+  <input type="text" name="company" id="company" placeholder="Ashesi">
+  <label for="eventName"><b>Event name:</b></label>
+  <input type="text" name="eventName" id="eventNam" placeholder="Meeting">
+
+</div>
+<input id="register_action" type="submit" value="Register" data-iconpos="right" >
+<div id="msg" align="center"></div>
+ 
+  </div>
+
+  <div data-role="footer">
+    <div data-role="navbar">
+  <ul>  
+  <li><a href="#home" data-transition="flip" data-icon="home">Home</a></li>
+  <li><a  href="#register" data-transition="flip" data-icon="carat-d" class="ui-btn-active ui-disabled">Register</a></li></ul>
+</div> 
+  </div>
+
+</div>
+
+
+<!--ThirdPage-->
+<div data-role="page" id="meetings" data-theme="b">
+
+  <div data-role="header" data-position="fixed">
+<p align="center" style='font-size:190%'><img src="images/DAF_logo.png" alt="Dwaso_abafie_logo" align="center" 
+  class="ui-btn-left" height="100" width="100"></img>iWuzHierSom_app</p>
+</div>
+
+
+  <div data-role="main" class="ui-content" id="content">
+    <div id="contentMeeting" data-role="collapsibleset"></div> 
+  </div>
+
+  <div data-role="footer">
+    <div data-role="navbar">
+  <ul>  
+  <li><a href="#home" data-transition="flip" data-icon="home">Home</a></li>
+  <li><a  href="#register" data-transition="flip" data-icon="carat-d" class="ui-btn-active ui-disabled">Meetings</a></li></ul>
+</div> 
+  </div>
+
+</div>
+
+
+<!--FourthPage-->
+<div data-role="page" id="checkingIn" data-theme="b">
+  <div data-role="header" data-position="fixed">
+<p align="center" style='font-size:190%'><img src="images/DAF_logo.png" alt="Dwaso_abafie_logo" align="center" 
+  class="ui-btn-left" height="100" width="100"></img>iWuzHierSom_app</p>
+</div>
+
+
+  <div data-role="main" class="ui-content" id="content">
+
+    <div class="ui-field-contain">
+      <h3 align="center"> Please enter your code to get a ticket.</h3>
+  <label for="code"><b>Code:</b></label>
+  <input type="text" name="code" id="code">
+  <br></br>
+<div align="center">
+  <button id="getCode" onclick="writeBC(document.getElementById('code').value)">GET CODE</button>
+</div>
+  <div id="msg2" align="center"></div>
+  <script type="text/javascript">
+function writeBC(s)
+{
+    var bc = new AtalasoftBarcode39(s);
+    document.getElementById('bcArea').innerHTML = bc.getBarcode(50, 2, 8);
+}
+</script>
+  </div>
+  <div id="bcArea" align="center"></div>
+</div>
+<br></br>
+
+  <div data-role="footer">
+    <div data-role="navbar">
+  <ul>  
+  <li><a href="#home" data-transition="flip" data-icon="home">Home</a></li>
+  <li><a  href="#register" data-transition="flip" data-icon="carat-d" class="ui-btn-active ui-disabled">CheckingIn</a></li></ul>
+</div> 
+  </div>
+
+</div>
+
+
+
+</body>
+</html>
